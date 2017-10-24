@@ -25,11 +25,13 @@ module.exports.handler = co.wrap(function* (input, context, callback) {
   } else {
     let req = {
       TableName: "hotel_bookings",
-      Key: { 
+      Key: {
         trip_id : input.trip_id
       }
     }
     yield dynamodb.deleteAsync(req);
-    callback(null, "ok");
+    callback(null, {
+      cancel_hotel: "ok"
+    });
   }
 });

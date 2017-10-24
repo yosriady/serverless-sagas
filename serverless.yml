@@ -1,4 +1,4 @@
-service: lambda-saga
+service: serverless-sagas
 
 custom:
   region: ${opt:region, self:provider.region}
@@ -7,13 +7,13 @@ provider:
   name: aws
   runtime: nodejs6.10
   stage: dev
-  region: us-east-1
+
   iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:PutItem
         - dynamodb:DeleteItem
-      Resource: 
+      Resource:
         - arn:aws:dynamodb:${self:custom.region}:*:table/hotel_bookings
         - arn:aws:dynamodb:${self:custom.region}:*:table/rental_bookings
         - arn:aws:dynamodb:${self:custom.region}:*:table/flight_bookings
