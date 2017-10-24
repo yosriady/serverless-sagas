@@ -1,0 +1,124 @@
+{
+  "Comment": "An example of the Amazon States Language using a parallel state to execute two branches at the same time.",
+  "StartAt": "BookTrip",
+  "States": {
+    "BookTrip": {
+      "Type": "Parallel",
+      "Next": "Trip Booking Successful",
+      "Branches": [
+         {
+          "StartAt": "BookHotel",
+          "States": {
+             "BookHotel": {
+                "Type": "Task",
+                "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-book-hotel",
+                "ResultPath": "$.BookHotelResult",
+                "End": true
+              }
+          }
+        },
+        {
+          "StartAt": "BookFlight",
+          "States": {
+            "BookFlight": {
+                "Type": "Task",
+                "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-book-flight",
+                "ResultPath": "$.BookFlightResult",
+                "End": true
+              }
+          }
+        },
+        {
+          "StartAt": "BookRental",
+          "States": {
+             "BookRental": {
+                "Type": "Task",
+                "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-book-rental",
+                "ResultPath": "$.BookRentalResult",
+                "End": true
+          	}
+          }
+        }
+      ],
+      "Catch": [        
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.BookTripError",
+          "Next": "Trip Booking Failed"
+        }
+      ]
+    },
+    "Trip Booking Failed": {
+      "Type": "Pass",
+      "Next": "CancelTrip"
+    },
+    "CancelTrip": {
+      "Type": "Parallel",
+      "Next": "Trip Booking Cancelled",
+      "Branches": [
+        {
+          "StartAt": "CancelHotel",
+          "States": {
+            "CancelHotel": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-cancel-hotel",
+              "Catch": [        
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "ResultPath": "$.CancelHotelError",
+                  "Next": "CancelHotel"
+                }
+              ],
+              "ResultPath": "$.CancelHotelResult",
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "CancelFlight",
+          "States": {
+            "CancelFlight": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-cancel-flight",
+              "Catch": [        
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "ResultPath": "$.CancelFlightError",
+                  "Next": "CancelFlight"
+                }
+              ],
+              "ResultPath": "$.CancelFlightResult",
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "CancelRental",
+          "States": {
+            "CancelRental": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-cancel-flight",
+              "Catch": [        
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "ResultPath": "$.CancelRentalError",
+                  "Next": "CancelRental"
+                }
+              ],
+              "ResultPath": "$.CancelRentalResult",
+              "End": true
+            }
+          }
+        }
+      ]
+  	},
+    "Trip Booking Successful": {
+      "Type": "Succeed"
+    },
+    "Trip Booking Cancelled": {
+      "Type": "Fail",
+      "Cause": "Trip cancelled due to error.",
+      "Error": "TripCancelledError"
+    }
+  }
+}
