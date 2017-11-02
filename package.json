@@ -1,18 +1,19 @@
 {
-  "name": "lambda-saga-pattern",
+  "name": "serverless-sagas",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "repository": "git@github.com:yosriady/serverless-sagas.git",
+  "author": "Yos Riady <yosriady@gmail.com>",
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "bluebird": "^3.5.0",
-    "co": "^4.6.0"
+    "test": "node_modules/.bin/jest",
+    "test:coverage": "open coverage/lcov-report/index.html",
+    "eslint": "./node_modules/.bin/eslint ."
   },
   "devDependencies": {
     "serverless": "^1.17.0"
-  }
+  },
+  "jest": {
+    "collectCoverage": true
+  },
+  "dependencies": {}
 }

@@ -1,5 +1,5 @@
 {
-  "Comment": "An example of the Amazon States Language using a parallel state to execute two branches at the same time.",
+  "Comment": "A distributed saga example.",
   "StartAt": "BookTrip",
   "States": {
     "BookTrip": {
@@ -11,7 +11,7 @@
           "States": {
              "BookHotel": {
                 "Type": "Task",
-                "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-book-hotel",
+                "Resource": "arn:aws:lambda:{YOUR_AWS_REGION}:{YOUR_AWS_ACCOUNT_ID}:function:serverless-sagas-dev-bookHotel",
                 "ResultPath": "$.BookHotelResult",
                 "End": true
               }
@@ -22,25 +22,25 @@
           "States": {
             "BookFlight": {
                 "Type": "Task",
-                "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-book-flight",
+                "Resource": "arn:aws:lambda:{YOUR_AWS_REGION}:{YOUR_AWS_ACCOUNT_ID}:function:serverless-sagas-dev-bookFlight",
                 "ResultPath": "$.BookFlightResult",
                 "End": true
               }
           }
         },
         {
-          "StartAt": "BookRental",
+          "StartAt": "BookCar",
           "States": {
-             "BookRental": {
+             "BookCar": {
                 "Type": "Task",
-                "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-book-rental",
-                "ResultPath": "$.BookRentalResult",
+                "Resource": "arn:aws:lambda:{YOUR_AWS_REGION}:{YOUR_AWS_ACCOUNT_ID}:function:serverless-sagas-dev-bookCar",
+                "ResultPath": "$.BookCarResult",
                 "End": true
           	}
           }
         }
       ],
-      "Catch": [        
+      "Catch": [
         {
           "ErrorEquals": ["States.ALL"],
           "ResultPath": "$.BookTripError",
@@ -61,8 +61,8 @@
           "States": {
             "CancelHotel": {
               "Type": "Task",
-              "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-cancel-hotel",
-              "Catch": [        
+              "Resource": "arn:aws:lambda:{YOUR_AWS_REGION}:{YOUR_AWS_ACCOUNT_ID}:function:serverless-sagas-dev-cancelHotel",
+              "Catch": [
                 {
                   "ErrorEquals": ["States.ALL"],
                   "ResultPath": "$.CancelHotelError",
@@ -79,8 +79,8 @@
           "States": {
             "CancelFlight": {
               "Type": "Task",
-              "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-cancel-flight",
-              "Catch": [        
+              "Resource": "arn:aws:lambda:{YOUR_AWS_REGION}:{YOUR_AWS_ACCOUNT_ID}:function:serverless-sagas-dev-cancelFlight",
+              "Catch": [
                 {
                   "ErrorEquals": ["States.ALL"],
                   "ResultPath": "$.CancelFlightError",
@@ -93,19 +93,19 @@
           }
         },
         {
-          "StartAt": "CancelRental",
+          "StartAt": "CancelCar",
           "States": {
-            "CancelRental": {
+            "CancelCar": {
               "Type": "Task",
-              "Resource": "arn:aws:lambda:ap-northeast-1:196709014601:function:lambda-saga-dev-cancel-flight",
-              "Catch": [        
+              "Resource": "arn:aws:lambda:{YOUR_AWS_REGION}:{YOUR_AWS_ACCOUNT_ID}:function:serverless-sagas-dev-cancelCar",
+              "Catch": [
                 {
                   "ErrorEquals": ["States.ALL"],
-                  "ResultPath": "$.CancelRentalError",
-                  "Next": "CancelRental"
+                  "ResultPath": "$.CancelCarError",
+                  "Next": "CancelCar"
                 }
               ],
-              "ResultPath": "$.CancelRentalResult",
+              "ResultPath": "$.CancelCarResult",
               "End": true
             }
           }
