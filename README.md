@@ -1,5 +1,7 @@
 # serverless-sagas
 
+> Original credit to https://github.com/theburningmonk/lambda-saga-pattern
+
 ## Successful input
 
 ```
@@ -36,5 +38,3 @@
  "failBookFlight": true
 }
 ```
-
-> Original credit to https://github.com/theburningmonk/lambda-saga-pattern
