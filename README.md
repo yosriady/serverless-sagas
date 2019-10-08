@@ -36,3 +36,5 @@
  "failBookFlight": true
 }
 ```
+
+> Original credit to https://github.com/theburningmonk/lambda-saga-pattern
